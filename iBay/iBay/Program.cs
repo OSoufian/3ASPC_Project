@@ -1,21 +1,9 @@
-
-using MySql.Data.MySqlClient;
+using iBay.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace iBay {
     public class Program {
         public static void Main(string[] args) {
-            string connectionString = null;
-            MySqlConnection cnn;
-            connectionString = "server=localhost;database=iBay;uid=root;pwd=\"\";";
-            cnn = new MySqlConnection(connectionString);
-            try {
-                cnn.Open();
-                Console.WriteLine("Connection Open ! ");
-                cnn.Close();
-            } catch (Exception ex) {
-                Console.WriteLine("Can not open connection ! ");
-            }
-
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -37,10 +25,11 @@ namespace iBay {
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
+
+
         }
     }
 }

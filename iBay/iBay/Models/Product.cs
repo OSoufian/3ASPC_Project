@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace iBay
+namespace iBay.Models
 {
     public class Product
     {

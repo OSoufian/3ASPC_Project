@@ -1,3 +1,4 @@
+using iBay.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace iBay.Controllers

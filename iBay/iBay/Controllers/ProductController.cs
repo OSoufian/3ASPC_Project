@@ -1,6 +1,8 @@
+using iBay.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace iBay.Controllers {
+namespace iBay.Controllers
+{
     [ApiController]
     [Route("[controller]")]
     public class ProductController : ControllerBase {
@@ -12,16 +14,14 @@ namespace iBay.Controllers {
         }
 
         [HttpPost(Name = "AddProduct")]
-        public IEnumerable<Product> Post()
-        {
-            return Enumerable.Range(1, 5).Select(index => new Product
+        public Product Post(){
+            return new Product
             {
-                Price = 10
-            })
-            .ToArray();
+                Price = 100
+            };
         }
         [HttpGet(Name = "GetProduct")]
-        public IEnumerable<Product> Get()
+        public IEnumerable<Models.Product> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new Product
             {
@@ -30,7 +30,7 @@ namespace iBay.Controllers {
             .ToArray();
         }
         [HttpPut(Name = "UpdateProduct")]
-        public IEnumerable<Product> Put()
+        public IEnumerable<Models.Product> Put()
         {
             return Enumerable.Range(1, 5).Select(index => new Product
             {
@@ -39,7 +39,7 @@ namespace iBay.Controllers {
             .ToArray();
         }
         [HttpDelete(Name = "DeleteProduct")]
-        public IEnumerable<Product> Delete()
+        public IEnumerable<Models.Product> Delete()
         {
             return Enumerable.Range(1, 5).Select(index => new Product
             {
