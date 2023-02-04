@@ -1,5 +1,6 @@
 using iBay.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace iBay.Controllers
 {
@@ -8,45 +9,105 @@ namespace iBay.Controllers
     public class ProductController : ControllerBase {
 
         private readonly ILogger<ProductController> _logger;
+        private readonly MySQLConnection database;
 
-        public ProductController(ILogger<ProductController> logger)
+        public ProductController(ILogger<ProductController> logger, MySQLConnection database)
         {
+            this.database = database;
             _logger = logger;
         }
 
         [HttpPost(Name = "AddProduct")]
-        public Product Post(){
-            return new Product
+        public async Task<IActionResult> Post(Product product)
+        {
+            Product newProduct = new Product()
             {
-                Price = 100
+                Price = product.Price,
+                Available = product.Available,
+                Added_time = product.Added_time,
+                Image = product.Image
             };
+
+            database.Add(newProduct);
+            await database.SaveChangesAsync();
+
+            return Created($"Product/{newProduct.Id}", newProduct);
         }
-        [HttpGet(Name = "GetProduct")]
-        public IEnumerable<Models.Product> Get()
+
+        [HttpGet()]
+        public async Task<ActionResult<List<Product>>> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new Product
+            var List = await database.Product.Select(
+                s => new Product
+                {
+                    Id = s.Id,
+                    Price = s.Price,
+                    Available = s.Available,
+                    Added_time = s.Added_time,
+                    Image = s.Image
+                }
+            ).ToListAsync();
+
+            if (List.Count < 0)
             {
-                Price = 10
-            })
-            .ToArray();
+                return NotFound("ouups");
+            }
+            else
+            {
+                return List;
+            }
         }
-        [HttpPut(Name = "UpdateProduct")]
-        public IEnumerable<Models.Product> Put()
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetProductById(int Id)
         {
-            return Enumerable.Range(1, 5).Select(index => new Product
+            Product Product = await database.Product.Select(
+                    s => new Product
+                    {
+                        Id = s.Id,
+                        Price = s.Price,
+                        Available = s.Available,
+                        Added_time = s.Added_time,
+                        Image = s.Image,
+                    })
+                .FirstOrDefaultAsync(s => s.Id == Id);
+
+            if (Product == null)
             {
-                Price = 10
-            })
-            .ToArray();
+                return NotFound("Pas d'utilisateur");
+            }
+            else
+            {
+                return Product;
+            }
         }
-        [HttpDelete(Name = "DeleteProduct")]
-        public IEnumerable<Models.Product> Delete()
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(Product product, int Id)
         {
-            return Enumerable.Range(1, 5).Select(index => new Product
+            Product updatedProduct = await database.Product.FirstOrDefaultAsync(s => s.Id == Id);
+
+            updatedProduct.Price = product.Price == -1 ? updatedProduct.Price : product.Price;
+            updatedProduct.Available = product.Available != product.Available ? updatedProduct.Available : product.Available;
+            updatedProduct.Added_time = product.Added_time == new DateTime(2017, 8, 24) ? updatedProduct.Added_time : product.Added_time;
+            updatedProduct.Image = product.Image == null ? updatedProduct.Image : product.Image;
+
+            await database.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int Id)
+        {
+            Product Product = new Product()
             {
-                Price = 10
-            })
-            .ToArray();
+                Id = Id
+            };
+
+            database.Product.Attach(Product);
+            database.Product.Remove(Product);
+            await database.SaveChangesAsync();
+            return NoContent();
         }
 
     }

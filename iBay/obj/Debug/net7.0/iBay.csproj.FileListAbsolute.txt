@@ -83,3 +83,9 @@ C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Dev
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\ref\iBay.dll
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore.dll
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\Humanizer.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\Mono.TextTemplating.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\MySql.EntityFrameworkCore.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\System.CodeDom.dll

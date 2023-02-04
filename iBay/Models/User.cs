@@ -24,5 +24,20 @@ namespace iBay.Models
         [Required]
         [StringLength(10)]
         public string? Role { get; set; }
+
+        public User(string email, string pseudo, string password, string role = "user")
+        {
+            Email = email;
+            Pseudo = pseudo;
+            Password = password;
+            Role = role;
+        }
+
+        public User() {
+            Email = "e";
+            Pseudo = "ps";
+            Password = "pa";
+            Role = "u";
+        }
     }
 }

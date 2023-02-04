@@ -1,27 +1,24 @@
 ﻿using MySql.Data.MySqlClient;
 
 using Microsoft.EntityFrameworkCore;
+using iBay.Models;
 
 public class MySQLConnection : DbContext
 {
+    public DbSet<User> User { get; set; }
+    public DbSet<Product> Product { get; set; }
 
-    //   Connexion à la base de données qui marche :
-    //	  public MySQLConnection()
-    //   {
-    //       string connectionString = null;
-    //       MySqlConnection cnn;
-    //       connectionString = "server=localhost;database=iBay;uid=root;pwd=\"\";";
-    //       cnn = new MySqlConnection(connectionString);
-    //       try {
-    //           cnn.Open();
-    //           Console.WriteLine("Connection Open ! ");
-    //           cnn.Close();
-    //       } catch (Exception ex) {
-    //           Console.WriteLine("Can not open connection ! ");
-    //       }
-    //   }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
+    public MySQLConnection()
+    {
+    }
+
+    public MySQLConnection(DbContextOptions<MySQLConnection> options)
+            : base(options) {
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
         if (!optionsBuilder.IsConfigured) {
             optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=;database=iBay");
         }
