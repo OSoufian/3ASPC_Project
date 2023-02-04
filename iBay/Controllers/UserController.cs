@@ -1,6 +1,7 @@
 using iBay.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace iBay.Controllers
 {
@@ -18,20 +19,25 @@ namespace iBay.Controllers
         }
 
         [HttpPost(Name = "AddUser")]
-        public IEnumerable<User> Post(User user)
+        public async Task<HttpStatusCode> Post(User user)
         {
             //return Enumerable.Range(1, 5).Select(index => new User
             //{
             //    Pseudo = "loki"
             //})
             //.ToArray();
-            User newUser entity = new User() {
-                Email = User.Email,
-                LastName = User.LastName,
-                Username = User.Username,
-                Password = User.Password,
-                EnrollmentDate = User.EnrollmentDate
+            User newUser = new User() {
+                Email = user.Email,
+                Pseudo = user.Pseudo,
+                Password = user.Password,
+                Role = user.Role
             };
+
+            database.Add(newUser);
+            await database.SaveChangesAsync();
+
+            return HttpStatusCode.Created;
+
         }
         [HttpGet(Name = "GetUser")]
         public IEnumerable<User> Get()
