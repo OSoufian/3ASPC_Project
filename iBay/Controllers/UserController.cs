@@ -22,17 +22,20 @@ namespace iBay.Controllers
         [HttpPost(Name = "AddUser")]
         public async Task<IActionResult> Post(User user)
         {
+            byte[] passwordHash, passwordSalt;
+
+            CreatePasswordHash(user.Password, out passwordHash, out passwordSalt);
+
             User newUser = new User() {
                 Email = user.Email,
                 Pseudo = user.Pseudo,
-                Password = user.Password,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
                 Role = user.Role
             };
 
             database.Add(newUser);
             await database.SaveChangesAsync();
-
-            //newUser.Remove("password");
 
             return Created($"User/{newUser.Id}", newUser);
         }
@@ -46,7 +49,8 @@ namespace iBay.Controllers
                     Id = s.Id,
                     Email = s.Email,
                     Pseudo = s.Pseudo,
-                    Password = s.Password,
+                    PasswordHash = s.PasswordHash,
+                    PasswordSalt = s.PasswordSalt,
                     Role = s.Role
                 }
             ).ToListAsync();
@@ -69,8 +73,9 @@ namespace iBay.Controllers
                         Id = s.Id,
                         Email = s.Email ?? "nope",
                         Pseudo = s.Pseudo ?? "nope",
-                        Password = s.Password ?? "nope",
-              Role = s.Role ?? "nope"
+                        PasswordHash = s.PasswordHash ?? "nope",
+                        PasswordSalt = s.PasswordSalt ?? "nope",
+                        Role = s.Role ?? "nope"
                     })
                 .FirstOrDefaultAsync(s => s.Id == Id);
 
@@ -87,14 +92,20 @@ namespace iBay.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(User user, int Id)
         {
+            byte[] passwordHash, passwordSalt;
             User updatedUser = await database.User.FirstOrDefaultAsync(s => s.Id == Id);
+
+            password? CreatePasswordHash(user.Password, out passwordHash, out passwordSalt) : null;
 
             updatedUser.Email = user.Email == "e" ? updatedUser.Email : user.Email;
             updatedUser.Pseudo = user.Pseudo == "ps" ? updatedUser.Pseudo : user.Pseudo;
-            updatedUser.Password = user.Password == "pa" ? updatedUser.Password : user.Password;
+            updatedUser.PasswordHash = user.PasswordHash == "pah" ? updatedUser.PasswordHash : user.PasswordHash
+            updatedUser.PasswordSalt = user.PasswordSalt == "pas" ? updatedUser.PasswordSalt : user.PasswordSalt
             updatedUser.Role = user.Role == "u" ? updatedUser.Role : user.Role;
 
+
             await database.SaveChangesAsync();
+
             return Ok();
         }
 
@@ -110,6 +121,47 @@ namespace iBay.Controllers
             database.User.Remove(user);
             await database.SaveChangesAsync();
             return NoContent();
+        }
+
+        [HttpGet("login")]
+        public async Task<User> Login(string pseudo, string password)
+        {
+            var user = await database.User.FirstOrDefaultAsync(x => x.Pseudo == pseudo);
+            if (user == null)
+                return NotFound();
+
+            if (!VerifyPassword(password, user.PasswordHash, user.PasswordSalt))
+                return Unauthorized();
+
+            return user;
+        }
+
+        private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != passwordHash[i]) return false;
+                }
+            }
+            return true;
+        }
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        public async Task<bool> UserExists(string pseudo) {
+            if (await database.User.AnyAsync(x => x.Pseudo == pseudo))
+                return true;
+            return false;
         }
     }
 }

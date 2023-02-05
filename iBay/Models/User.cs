@@ -19,24 +19,30 @@ namespace iBay.Models
         [Required]
         [MinLength(8)]
         [MaxLength(50)]
-        public string? Password { get; set; }
+        public string Password { get; set; }
+
+        public byte[] PasswordHash { get; set; }
+
+        public byte[] PasswordSalt { get; set; }
 
         [Required]
         [StringLength(10)]
         public string? Role { get; set; }
 
-        public User(string email, string pseudo, string password, string role = "user")
+        public User(string email, string pseudo, byte[] passwordHash, byte[] passwordSalt, string role = "user")
         {
             Email = email;
             Pseudo = pseudo;
-            Password = password;
+            PasswordHash = passwordHash;
+            PasswordSalt = passwordSalt;
             Role = role;
         }
 
         public User() {
             Email = "e";
             Pseudo = "ps";
-            Password = "pa";
+            PasswordHash = "pah";
+            PasswordSalt = "pas";
             Role = "u";
         }
     }

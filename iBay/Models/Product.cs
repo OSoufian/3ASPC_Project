@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace iBay.Models
@@ -9,8 +10,9 @@ namespace iBay.Models
         public int Id { get; set; }
 
         [Required]
-        [Url]
-        public string? Image { get; set; }
+        [FromForm(Name = "image")]
+        [DataType(DataType.Upload)]
+        public IFormFile? Image { get; set; }
 
         [Required]
         [Range(0, 10000000000000)]
@@ -20,9 +22,9 @@ namespace iBay.Models
         public bool Available { get; set; }
 
         [Required]
-        public DateTime Added_time { get; set; }
+        public DateTime Added_Time { get; set; }
 
-        public Product(int price, bool available, DateTime AddedTime, string? image)
+        public Product(int price, bool available, DateTime AddedTime, IFormFile? image)
         {
             Price = price;
             Available = available;
@@ -33,7 +35,7 @@ namespace iBay.Models
         public Product() {
             Price = -1;
             Available = false;
-            Added_time = new DateTime(2017, 8, 24);
+            Added_Time = new DateTime(2017, 8, 24);
         }
     }
 

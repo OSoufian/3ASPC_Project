@@ -1,6 +1,7 @@
 using iBay.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http.Headers;
 
 namespace iBay.Controllers
 {
@@ -17,21 +18,72 @@ namespace iBay.Controllers
             _logger = logger;
         }
 
+        //[HttpPost(Name = "AddProduct")]
+        //public IActionResult Post([FromForm]Product product)
+        //{
+        //    try {
+        //        if (product.Image == null || product.Image.Length == 0) {
+        //            return BadRequest("Please send a photo");
+        //        }
+        //        //create unique name for file
+        //        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(product.Image.FileName);
+
+        //        //set file url
+        //        var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/", fileName);
+
+        //        using (var stream = new FileStream(savePath, FileMode.Create)) {
+        //            product.Image.CopyTo(stream);
+        //        }
+
+        //        return Ok(fileName);
+        //    } catch {
+        //        return BadRequest("error in upload image");
+        //    }
+        //}
+
+        //TODO : faire que ça marche
         [HttpPost(Name = "AddProduct")]
-        public async Task<IActionResult> Post(Product product)
-        {
-            Product newProduct = new Product()
-            {
-                Price = product.Price,
-                Available = product.Available,
-                Added_time = product.Added_time,
-                Image = product.Image
-            };
+        public IActionResult PostImageNews([FromForm] IFormFile file) {
+            try {
+                if (file == null || file.Length == 0) {
+                    return BadRequest("Please send a photo");
+                }
+                //create unique name for file
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
-            database.Add(newProduct);
-            await database.SaveChangesAsync();
+                //set file url
+                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/news", fileName);
 
-            return Created($"Product/{newProduct.Id}", newProduct);
+                using (var stream = new FileStream(savePath, FileMode.Create)) {
+                    file.CopyTo(stream);
+                }
+
+                return Ok(fileName);
+            } catch {
+                return BadRequest("error in upload image");
+            }
+        }
+
+        public static async Task<string> PostImage(string apiendpoint, IFormFile data) {
+            using (var httpClient = new HttpClient()) {
+                var multipartContent = new MultipartFormDataContent();
+                var fileContent = new ByteArrayContent(GetFileArray(data));
+                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
+                multipartContent.Add(fileContent, "file", data.FileName);
+                var resultUploadImage = await httpClient.PostAsync(apiendpoint, multipartContent);
+                if (resultUploadImage.IsSuccessStatusCode) {
+                    var fileName = (await resultUploadImage.Content.ReadAsStringAsync()).Replace("\"", "");
+                    return fileName;
+                }
+                return "";
+            }
+        }
+
+        public static byte[] GetFileArray(IFormFile file) {
+            using (var ms = new MemoryStream()) {
+                file.CopyTo(ms);
+                return ms.ToArray();
+            }
         }
 
         [HttpGet()]
@@ -43,7 +95,7 @@ namespace iBay.Controllers
                     Id = s.Id,
                     Price = s.Price,
                     Available = s.Available,
-                    Added_time = s.Added_time,
+                    Added_Time = s.Added_Time,
                     Image = s.Image
                 }
             ).ToListAsync();
@@ -67,7 +119,7 @@ namespace iBay.Controllers
                         Id = s.Id,
                         Price = s.Price,
                         Available = s.Available,
-                        Added_time = s.Added_time,
+                        Added_Time = s.Added_Time,
                         Image = s.Image,
                     })
                 .FirstOrDefaultAsync(s => s.Id == Id);
@@ -87,9 +139,9 @@ namespace iBay.Controllers
         {
             Product updatedProduct = await database.Product.FirstOrDefaultAsync(s => s.Id == Id);
 
-            updatedProduct.Price = product.Price == -1 ? updatedProduct.Price : product.Price;
-            updatedProduct.Available = product.Available != product.Available ? updatedProduct.Available : product.Available;
-            updatedProduct.Added_time = product.Added_time == new DateTime(2017, 8, 24) ? updatedProduct.Added_time : product.Added_time;
+            updatedProduct.Price = product.Price == 10000000000000 ? updatedProduct.Price : product.Price;
+            updatedProduct.Available = product.Available != updatedProduct.Available ? updatedProduct.Available : product.Available;
+            updatedProduct.Added_Time = product.Added_Time == new DateTime(2017, 8, 24) ? updatedProduct.Added_Time : product.Added_Time;
             updatedProduct.Image = product.Image == null ? updatedProduct.Image : product.Image;
 
             await database.SaveChangesAsync();
