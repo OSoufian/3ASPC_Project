@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 namespace iBay.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("products")]
     public class ProductController : ControllerBase {
 
         private readonly ILogger<ProductController> _logger;
@@ -43,47 +43,23 @@ namespace iBay.Controllers
 
         //TODO : faire que ça marche
         [HttpPost(Name = "AddProduct")]
-        public IActionResult PostImageNews([FromForm] IFormFile file) {
-            try {
-                if (file == null || file.Length == 0) {
-                    return BadRequest("Please send a photo");
+        public async Task<IActionResult> Index(List<IFormFile> files) {
+            long size = files.Sum(f => f.Length);
+
+            var filePaths = new List<string>();
+            foreach (var formFile in files) {
+                if (formFile.Length > 0) {
+                    // full path to file in temp location
+                    var filePath = Path.GetTempFileName(); //we are using Temp file name just for the example. Add your own file path.
+                    filePaths.Add(filePath);
+                    using (var stream = new FileStream(filePath, FileMode.Create)) {
+                        await formFile.CopyToAsync(stream);
+                    }
                 }
-                //create unique name for file
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-
-                //set file url
-                var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/news", fileName);
-
-                using (var stream = new FileStream(savePath, FileMode.Create)) {
-                    file.CopyTo(stream);
-                }
-
-                return Ok(fileName);
-            } catch {
-                return BadRequest("error in upload image");
             }
-        }
-
-        public static async Task<string> PostImage(string apiendpoint, IFormFile data) {
-            using (var httpClient = new HttpClient()) {
-                var multipartContent = new MultipartFormDataContent();
-                var fileContent = new ByteArrayContent(GetFileArray(data));
-                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("image/jpeg");
-                multipartContent.Add(fileContent, "file", data.FileName);
-                var resultUploadImage = await httpClient.PostAsync(apiendpoint, multipartContent);
-                if (resultUploadImage.IsSuccessStatusCode) {
-                    var fileName = (await resultUploadImage.Content.ReadAsStringAsync()).Replace("\"", "");
-                    return fileName;
-                }
-                return "";
-            }
-        }
-
-        public static byte[] GetFileArray(IFormFile file) {
-            using (var ms = new MemoryStream()) {
-                file.CopyTo(ms);
-                return ms.ToArray();
-            }
+            // process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+            return Ok(new { count = files.Count, size, filePaths });
         }
 
         [HttpGet()]
