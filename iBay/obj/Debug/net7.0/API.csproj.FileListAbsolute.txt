@@ -1,0 +1,7 @@
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\API.csproj.AssemblyReference.cache
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\API.AssemblyInfoInputs.cache
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\API.AssemblyInfo.cs
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\API.csproj.CoreCompileInputs.cache
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\API.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\obj\Debug\net7.0\API.MvcApplicationPartsAssemblyInfo.cache
