@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 
-namespace iBay.Controllers
-{
+namespace iBay.Controllers {
     [ApiController]
     [Route("products")]
     public class ProductController : ControllerBase {
@@ -12,62 +11,31 @@ namespace iBay.Controllers
         private readonly ILogger<ProductController> _logger;
         private readonly MySQLConnection database;
 
-        public ProductController(ILogger<ProductController> logger, MySQLConnection database)
-        {
+        public ProductController(ILogger<ProductController> logger, MySQLConnection database) {
             this.database = database;
             _logger = logger;
         }
 
-        //[HttpPost(Name = "AddProduct")]
-        //public IActionResult Post([FromForm]Product product)
-        //{
-        //    try {
-        //        if (product.Image == null || product.Image.Length == 0) {
-        //            return BadRequest("Please send a photo");
-        //        }
-        //        //create unique name for file
-        //        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(product.Image.FileName);
-
-        //        //set file url
-        //        var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/", fileName);
-
-        //        using (var stream = new FileStream(savePath, FileMode.Create)) {
-        //            product.Image.CopyTo(stream);
-        //        }
-
-        //        return Ok(fileName);
-        //    } catch {
-        //        return BadRequest("error in upload image");
-        //    }
-        //}
-
-        //TODO : faire que ça marche
         [HttpPost(Name = "AddProduct")]
-        public async Task<IActionResult> Index(List<IFormFile> files) {
-            long size = files.Sum(f => f.Length);
+        public async Task<IActionResult> Post(Product product) {
+            Product newProduct = new Product() {
+                Price = product.Price,
+                Name = product.Name,
+                Available = product.Available,
+                Added_Time = product.Added_Time,
+                Image = product.Image
+            };
 
-            var filePaths = new List<string>();
-            foreach (var formFile in files) {
-                if (formFile.Length > 0) {
-                    // full path to file in temp location
-                    var filePath = Path.GetTempFileName(); //we are using Temp file name just for the example. Add your own file path.
-                    filePaths.Add(filePath);
-                    using (var stream = new FileStream(filePath, FileMode.Create)) {
-                        await formFile.CopyToAsync(stream);
-                    }
-                }
-            }
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
-            return Ok(new { count = files.Count, size, filePaths });
+            database.Add(newProduct);
+            await database.SaveChangesAsync();
+
+            return Created($"Product/{newProduct.Id}", newProduct);
         }
 
         [HttpGet()]
-        public async Task<ActionResult<List<Product>>> Get()
-        {
+        public async Task<ActionResult<List<Product>>> Get() {
             var List = await database.Product.Select(
-                s => new Product
-                {
+                s => new Product {
                     Id = s.Id,
                     Price = s.Price,
                     Available = s.Available,
@@ -76,22 +44,17 @@ namespace iBay.Controllers
                 }
             ).ToListAsync();
 
-            if (List.Count < 0)
-            {
+            if (List.Count < 0) {
                 return NotFound("ouups");
-            }
-            else
-            {
+            } else {
                 return List;
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductById(int Id)
-        {
+        public async Task<ActionResult<Product>> GetProductById(int Id) {
             Product Product = await database.Product.Select(
-                    s => new Product
-                    {
+                    s => new Product {
                         Id = s.Id,
                         Price = s.Price,
                         Available = s.Available,
@@ -100,19 +63,15 @@ namespace iBay.Controllers
                     })
                 .FirstOrDefaultAsync(s => s.Id == Id);
 
-            if (Product == null)
-            {
+            if (Product == null) {
                 return NotFound("Pas d'utilisateur");
-            }
-            else
-            {
+            } else {
                 return Product;
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(Product product, int Id)
-        {
+        public async Task<IActionResult> UpdateProduct(Product product, int Id) {
             Product updatedProduct = await database.Product.FirstOrDefaultAsync(s => s.Id == Id);
 
             updatedProduct.Price = product.Price == 10000000000000 ? updatedProduct.Price : product.Price;
@@ -125,10 +84,8 @@ namespace iBay.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int Id)
-        {
-            Product Product = new Product()
-            {
+        public async Task<IActionResult> DeleteProduct(int Id) {
+            Product Product = new Product() {
                 Id = Id
             };
 

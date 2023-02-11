@@ -27,3 +27,5 @@ C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Dev
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\System.ValueTuple.xml
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.CopyComplete
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\Newtonsoft.Json.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\Newtonsoft.Json.xml
