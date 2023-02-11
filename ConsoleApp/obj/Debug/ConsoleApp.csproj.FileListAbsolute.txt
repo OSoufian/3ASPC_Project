@@ -1,6 +1,11 @@
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\ConsoleApp.exe.config
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\ConsoleApp.exe
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\ConsoleApp.pdb
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.AssemblyReference.cache
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.SuggestedBindingRedirects.cache
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.CoreCompileInputs.cache
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.exe
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.pdb
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\RestSharp.dll
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\System.Buffers.dll
@@ -21,9 +26,4 @@ C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Dev
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\System.Text.Json.xml
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\bin\Debug\System.ValueTuple.xml
-C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.AssemblyReference.cache
-C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.SuggestedBindingRedirects.cache
-C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.CoreCompileInputs.cache
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.csproj.CopyComplete
-C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.exe
-C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\ConsoleApp\obj\Debug\ConsoleApp.pdb
