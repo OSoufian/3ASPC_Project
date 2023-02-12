@@ -71,7 +71,7 @@ namespace iBay.Controllers {
                 .FirstOrDefaultAsync(s => s.Id == Id);
 
             if (Product == null) {
-                return NotFound("Pas d'utilisateur");
+                return NotFound("Pas de produits");
             } else {
                 return Ok(Product);
             }
@@ -85,11 +85,12 @@ namespace iBay.Controllers {
             }
 
             Product updatedProduct = await database.Product.FirstOrDefaultAsync(s => s.Id == Id);
+            Product defaultProduct = new Product();
 
-            updatedProduct.Price = product.Price == 100000000 ? updatedProduct.Price : product.Price;
-            updatedProduct.Name = product.Name == "n" ? updatedProduct.Name : product.Name;
-            updatedProduct.Available = product.Available != updatedProduct.Available ? updatedProduct.Available : product.Available;
-            updatedProduct.Added_Time = product.Added_Time == new DateTime(2017, 8, 24) ? updatedProduct.Added_Time : product.Added_Time;
+            updatedProduct.Price = product.Price == defaultProduct.Price ? updatedProduct.Price : product.Price;
+            updatedProduct.Name = product.Name == defaultProduct.Name ? updatedProduct.Name : product.Name;
+            updatedProduct.Available = product.Available == defaultProduct.Available ? updatedProduct.Available : product.Available;
+            updatedProduct.Added_Time = product.Added_Time == defaultProduct.Added_Time ? updatedProduct.Added_Time : product.Added_Time;
             updatedProduct.Image = product.Image == null ? updatedProduct.Image : product.Image;
 
             await database.SaveChangesAsync();

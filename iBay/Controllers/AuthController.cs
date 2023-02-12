@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace iBay.Controllers {
     [ApiController]
-    [Route("[controller]")]
+    [Route("auth")]
     public class AuthController : ControllerBase {
         private readonly MySQLConnection database;
 
@@ -35,12 +35,11 @@ namespace iBay.Controllers {
             database.Add(newUser);
             await database.SaveChangesAsync();
 
-            UserResponse userResponse = new UserResponse()
-            {
+            UserResponse userResponse = new UserResponse() {
                 Email = Auth.Email,
                 Pseudo = Auth.Pseudo,
                 Role = Auth.Role
-            }
+            };
 
             return Created($"User/{newUser.Id}", userResponse);
         }

@@ -9,7 +9,6 @@ namespace iBay.Models {
         [Required]
         public string Name { get; set; }
 
-        [Required]
         [Url]
         public string? Image { get; set; }
 
@@ -20,6 +19,7 @@ namespace iBay.Models {
         [Required]
         public int Available { get; set; }
 
+        [Required]
         public DateTime Added_Time { get; set; }
 
         public Product(string name, int price, int available, DateTime addedTime, string image) {
@@ -32,9 +32,8 @@ namespace iBay.Models {
 
         public Product() {
             Name = "Inconnu";
-            Price = -1;
-            Image = "";
-            Available = 0;
+            Price = 100000000;
+            Available = 2;
             Added_Time = new DateTime(1970, 1, 1);
         }
     }

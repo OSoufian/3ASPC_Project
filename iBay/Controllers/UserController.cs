@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace iBay.Controllers {
     //[Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("users")]
     public class UserController : ControllerBase {
         private readonly MySQLConnection database;
 
@@ -63,13 +63,14 @@ namespace iBay.Controllers {
             byte[] passwordHash, passwordSalt;
             User updatedUser = await database.User.FirstOrDefaultAsync(s => s.Id == Id);
             if (updatedUser == null) return BadRequest();
+            Auth defaultUser = new Auth();
 
             CreatePasswordHash(user.Password, out passwordHash, out passwordSalt);
-            updatedUser.Email = user.Email == "e" ? updatedUser.Email : user.Email;
-            updatedUser.Pseudo = user.Pseudo == "ps" ? updatedUser.Pseudo : user.Pseudo;
-            updatedUser.Password_Hash = user.Password == "pa" ? updatedUser.Password_Hash : passwordHash;
-            updatedUser.Password_Salt = user.Password == "pa" ? updatedUser.Password_Salt : passwordSalt;
-            updatedUser.Role = user.Role == "u" ? updatedUser.Role : user.Role;
+            updatedUser.Email = user.Email == defaultUser.Email ? updatedUser.Email : user.Email;
+            updatedUser.Pseudo = user.Pseudo == defaultUser.Pseudo ? updatedUser.Pseudo : user.Pseudo;
+            updatedUser.Password_Hash = user.Password == defaultUser.Password ? updatedUser.Password_Hash : passwordHash;
+            updatedUser.Password_Salt = user.Password == defaultUser.Password ? updatedUser.Password_Salt : passwordSalt;
+            updatedUser.Role = user.Role == defaultUser.Role ? updatedUser.Role : user.Role;
 
             database.Update(updatedUser);
             await database.SaveChangesAsync();
