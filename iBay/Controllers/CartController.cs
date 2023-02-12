@@ -1,35 +1,67 @@
-using Microsoft.AspNetCore.Mvc;
+//using iBay.Models;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.EntityFrameworkCore;
 
-namespace iBay.Controllers
-{
-    [ApiController]
-    [Route("[controller]")]
-    public class CartController : ControllerBase
-    {
+//namespace iBay.Controller
+//{
+//    //[Authorize]
+//    [ApiController]
+//    [Route("[controller]")]
+//    public class CartController : ControllerBase
+//    {
+//        private readonly MySQLConnection database;
+//        private readonly UserManager<IdentityUser> _userManager;
 
-        private readonly ILogger<CartController> _logger;
+//        public CartController(MySQLConnection database, UserManager<IdentityUser> userManager)
+//        {
+//            this.database = database;
+//            _userManager = userManager;
+//        }
 
-        public CartController(ILogger<CartController> logger)
-        {
-            _logger = logger;
-        }
+//        [HttpPost]
+//        public async Task<IActionResult> AddToCart(Product product)
+//        {
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
 
-        /*[HttpPost(Name = "AddCart")]
-        public IEnumerable<Cart> Post()
-        {
-        }
-        [HttpGet(Name = "GetCart")]
-        public IEnumerable<Cart> Get()
-        {
-        }
-        [HttpPut(Name = "UpdateCart")]
-        public IEnumerable<Cart> Put()
-        {
-        }
-        [HttpDelete(Name = "DeleteCart")]
-        public IEnumerable<Cart> Delete()
-        {
-        }*/
+//            // Get the logged-in user
+//            var user = await _userManager.GetUserAsync(User);
 
-    }
-}
+//            var cart = await database.Cart.Include(c => c.Products)
+//                                          .FirstOrDefaultAsync(c => c.UserId == user.Id);
+//            if (cart == null)
+//            {
+//                cart = new Cart
+//                {
+//                    UserId = user.Id,
+//                    Products = new List<Product>()
+//                };
+//                database.Cart.Add(cart);
+//            }
+
+//            cart.Products.Add(product);
+
+//            await database.SaveChangesAsync();
+
+//            return Ok(cart);
+//        }
+
+//        [HttpGet]
+//        public async Task<IActionResult> GetCart()
+//        {
+//            // Get the logged-in user
+//            var user = await _userManager.GetUserAsync(User);
+
+//            // Get the cart for the user
+//            var cart = await database.Cart
+//                .Include(c => c.Products)
+//                .FirstOrDefaultAsync(c => c.UserId == user.Id);
+
+//            return Ok($"Your cart : {cart}");
+//        }
+//    }
+//}

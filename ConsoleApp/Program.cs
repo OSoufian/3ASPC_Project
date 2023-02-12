@@ -128,23 +128,25 @@ namespace ConsoleApp {
             string priceInput = Console.ReadLine();
             int price;
             while (!int.TryParse(priceInput, out price)) {
-                Console.WriteLine("Entrez un prix valide (un nombre) :  ");
+                Console.WriteLine("Entrez un prix valide (un nombre) : ");
                 priceInput = Console.ReadLine();
             };
 
-            Console.WriteLine("Entrez la validité :");
+            Console.WriteLine("Entrez la validité [O/N] :");
             string availableInput = Console.ReadLine();
-            int available;
-            while (!int.TryParse(availableInput, out available)) {
-                Console.WriteLine("Entrez un prix valide (un nombre) :  ");
+            while (availableInput != "O" && availableInput != "N") {
+                Console.WriteLine("Entrez une commande valide (O ou N) : ");
                 availableInput = Console.ReadLine();
             };
 
-            var client = new RestClient("https://localhost:7252/Product");
+            int available = availableInput == "O" ? 1 : 0;
+
+            var client = new RestClient("https://localhost:7252/products");
             var request = new RestRequest();
-            Product product = new Product { Name = name, Image = image, Price = price, Available = available, Added_Time = DateTime.Now };
+            Product product = new Product { Name = name, Image = image, Price = price, Available = available, Added_Time = DateTime.UtcNow };
             request.AddJsonBody(product);
             var response = client.Post(request);
+            Console.WriteLine(response.StatusCode);
             Console.WriteLine(response.Content.ToString());
             // TODO : Bien afficher le JSON
             Console.Read();

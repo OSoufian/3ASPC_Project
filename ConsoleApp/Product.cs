@@ -18,7 +18,7 @@ namespace ConsoleApp {
             Name = name;
             Price = price;
             Available = available;
-            AddedTime = AddedTime;
+            Added_Time = AddedTime;
             Image = image;
         }
 

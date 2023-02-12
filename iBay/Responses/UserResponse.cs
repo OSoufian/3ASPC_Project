@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace iBay.Models {
-    public class User {
+namespace iBay.Responses {
+    public class UserResponse {
         [Required]
         [Key]
         public int Id { get; set; }
@@ -14,25 +14,17 @@ namespace iBay.Models {
         [StringLength(50)]
         public string Pseudo { get; set; }
 
-        [StringLength(200)]
-        public byte[]? Password_Hash { get; set; }
-
-        [StringLength(200)]
-        public byte[]? Password_Salt { get; set; }
-
         [Required]
         [StringLength(10)]
         public string Role { get; set; }
 
-        public User(string email, string pseudo, byte[]? passwordHash, byte[]? passwordSalt, string role = "user") {
+        public UserResponse(string email, string pseudo, string role = "user") {
             Email = email;
             Pseudo = pseudo;
-            Password_Hash = passwordHash;
-            Password_Salt = passwordSalt;
             Role = role;
         }
 
-        public User() {
+        public UserResponse() {
             Email = "e";
             Pseudo = "ps";
             Role = "u";

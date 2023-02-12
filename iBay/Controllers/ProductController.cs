@@ -1,23 +1,27 @@
 using iBay.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Http.Headers;
 
 namespace iBay.Controllers {
+    //[Authorize]
     [ApiController]
     [Route("products")]
     public class ProductController : ControllerBase {
 
-        private readonly ILogger<ProductController> _logger;
         private readonly MySQLConnection database;
 
-        public ProductController(ILogger<ProductController> logger, MySQLConnection database) {
+        public ProductController(MySQLConnection database) {
             this.database = database;
-            _logger = logger;
         }
 
         [HttpPost(Name = "AddProduct")]
         public async Task<IActionResult> Post(Product product) {
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
             Product newProduct = new Product() {
                 Price = product.Price,
                 Name = product.Name,
@@ -33,11 +37,12 @@ namespace iBay.Controllers {
         }
 
         [HttpGet()]
-        public async Task<ActionResult<List<Product>>> Get() {
-            var List = await database.Product.Select(
+        public async Task<IActionResult> Get() {
+            List<Product> List = await database.Product.Select(
                 s => new Product {
                     Id = s.Id,
                     Price = s.Price,
+                    Name = s.Name,
                     Available = s.Available,
                     Added_Time = s.Added_Time,
                     Image = s.Image
@@ -47,16 +52,18 @@ namespace iBay.Controllers {
             if (List.Count < 0) {
                 return NotFound("ouups");
             } else {
-                return List;
+                return Ok(List);
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductById(int Id) {
+        public async Task<IActionResult> GetProductById(int Id) {
+            if (Id == 0) return BadRequest();
             Product Product = await database.Product.Select(
                     s => new Product {
                         Id = s.Id,
                         Price = s.Price,
+                        Name = s.Name,
                         Available = s.Available,
                         Added_Time = s.Added_Time,
                         Image = s.Image,
@@ -66,21 +73,27 @@ namespace iBay.Controllers {
             if (Product == null) {
                 return NotFound("Pas d'utilisateur");
             } else {
-                return Product;
+                return Ok(Product);
             }
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(Product product, int Id) {
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
             Product updatedProduct = await database.Product.FirstOrDefaultAsync(s => s.Id == Id);
 
-            updatedProduct.Price = product.Price == 10000000000000 ? updatedProduct.Price : product.Price;
+            updatedProduct.Price = product.Price == 100000000 ? updatedProduct.Price : product.Price;
+            updatedProduct.Name = product.Name == "n" ? updatedProduct.Name : product.Name;
             updatedProduct.Available = product.Available != updatedProduct.Available ? updatedProduct.Available : product.Available;
             updatedProduct.Added_Time = product.Added_Time == new DateTime(2017, 8, 24) ? updatedProduct.Added_Time : product.Added_Time;
             updatedProduct.Image = product.Image == null ? updatedProduct.Image : product.Image;
 
             await database.SaveChangesAsync();
-            return Ok();
+            return Ok(updatedProduct);
         }
 
         [HttpDelete("{id}")]

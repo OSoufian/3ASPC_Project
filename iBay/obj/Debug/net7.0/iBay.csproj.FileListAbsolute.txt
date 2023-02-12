@@ -89,3 +89,4 @@ C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Dev
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\Mono.TextTemplating.dll
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\MySql.EntityFrameworkCore.dll
 C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\System.CodeDom.dll
+C:\Users\osouf\OneDrive\Documents\Scolarité\SUPINFO\BEng3\3ASP - C# ASP.NET Developer\Projet\iBay\iBay\bin\Debug\net7.0\iBay.staticwebassets.runtime.json
