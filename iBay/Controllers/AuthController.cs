@@ -1,4 +1,5 @@
 ﻿using iBay.MiddleWares;
+using iBay.Responses;
 using iBay.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +35,14 @@ namespace iBay.Controllers {
             database.Add(newUser);
             await database.SaveChangesAsync();
 
-            return Created($"User/{newUser.Id}", newUser);
+            UserResponse userResponse = new UserResponse()
+            {
+                Email = Auth.Email,
+                Pseudo = Auth.Pseudo,
+                Role = Auth.Role
+            }
+
+            return Created($"User/{newUser.Id}", userResponse);
         }
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt) {
             using (var hmac = new System.Security.Cryptography.HMACSHA512()) {
@@ -49,14 +57,23 @@ namespace iBay.Controllers {
                 return BadRequest(ModelState);
             }
 
-            var user = await database.User.FirstOrDefaultAsync(x => x.Pseudo == login.Pseudo);
+            User user = await database.User.FirstOrDefaultAsync(x => x.Pseudo == login.Pseudo);
             if (user == null)
                 return NotFound();
 
             if (!VerifyPassword(login.Password, user.Password_Hash, user.Password_Salt))
                 return Unauthorized();
 
-            return Ok(user);
+            UserResponse userResponse = await database.User.Select(
+                x => new UserResponse
+                {
+                    Id = x.Id,
+                    Email = x.Email,
+                    Pseudo = x.Pseudo,
+                    Role = x.Role
+                }
+            ).FirstOrDefaultAsync(x => x.Pseudo == login.Pseudo);
+            return Ok(userResponse);
         }
 
         private bool VerifyPassword(string password, byte[]? passwordHash, byte[]? passwordSalt) {

@@ -79,6 +79,10 @@ namespace ConsoleApp {
                 case "a":
                     addProduct();
                     break;
+                case "D":
+                case "d":
+                    deleteProduct();
+                    break;
                 case "c":
                 case "C":
                     break;
@@ -149,6 +153,23 @@ namespace ConsoleApp {
             Console.WriteLine(response.StatusCode);
             Console.WriteLine(response.Content.ToString());
             // TODO : Bien afficher le JSON
+            Console.Read();
+        }
+
+        static void deleteProduct() {
+            Console.WriteLine("Entrez id:");
+            string idInput = Console.ReadLine();
+            int id;
+            while (!int.TryParse(idInput, out id)) {
+                Console.WriteLine("Entrez un id valide (un nombre) :  ");
+                idInput = Console.ReadLine();
+            };
+
+            Console.WriteLine("Connexion à l'API ...");
+            var client = new RestClient("https://localhost:7252/products/" + id);
+            var request = new RestRequest();
+            var response = client.Delete(request);
+            Console.WriteLine(response.StatusCode);
             Console.Read();
         }
     }

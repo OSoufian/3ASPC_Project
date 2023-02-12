@@ -17,7 +17,7 @@ namespace iBay.Controllers {
 
         [HttpGet()]
         public async Task<IActionResult> Get() {
-            var List = await database.User.Select(
+            List<UserResponse> List = await database.User.Select(
                 s => new UserResponse {
                     Id = s.Id,
                     Email = s.Email,
@@ -67,14 +67,23 @@ namespace iBay.Controllers {
             CreatePasswordHash(user.Password, out passwordHash, out passwordSalt);
             updatedUser.Email = user.Email == "e" ? updatedUser.Email : user.Email;
             updatedUser.Pseudo = user.Pseudo == "ps" ? updatedUser.Pseudo : user.Pseudo;
-            updatedUser.Password_Hash = passwordHash;
-            updatedUser.Password_Salt = passwordSalt;
+            updatedUser.Password_Hash = user.Password == "pa" ? updatedUser.Password_Hash : passwordHash;
+            updatedUser.Password_Salt = user.Password == "pa" ? updatedUser.Password_Salt : passwordSalt;
             updatedUser.Role = user.Role == "u" ? updatedUser.Role : user.Role;
 
             database.Update(updatedUser);
             await database.SaveChangesAsync();
 
-            return Ok();
+            UserResponse userResponse = await database.User.Select(
+                s => new UserResponse {
+                    Id = s.Id,
+                    Email = s.Email,
+                    Pseudo = s.Pseudo,
+                    Role = s.Role
+                }
+            ).FirstOrDefaultAsync(s => s.Id == Id);
+
+            return Ok(userResponse);
         }
 
         [HttpDelete("{id}")]
