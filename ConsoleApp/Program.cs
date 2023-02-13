@@ -20,6 +20,8 @@ namespace ConsoleApp {
             Console.WriteLine("-- iBay --\n");
             Console.WriteLine("Products [P]");
             Console.WriteLine("Login [L]");
+            Console.WriteLine("Register [R]");
+            Console.WriteLine("Manage Users (only Admin) [U]");
             Console.WriteLine("Exit the application [Q]");
             Console.WriteLine("\n>");
 
@@ -31,9 +33,9 @@ namespace ConsoleApp {
             };
         }
 
-        static void productMenu() {
+        static void productsMenu() {
             Console.Clear();
-            Console.WriteLine("-- Product --\n");
+            Console.WriteLine("-- Products --\n");
             Console.WriteLine("Get Products [G]");
             Console.WriteLine("Get Product by ID [I]");
             Console.WriteLine("Add Product [A]");
@@ -44,7 +46,26 @@ namespace ConsoleApp {
 
             string input = Console.ReadLine();
 
-            while (!isValidProductInput(input)) {
+            while (!isValidProductsInput(input)) {
+                Console.WriteLine("Veuillez entrer une commande valide :  ");
+                input = Console.ReadLine();
+            };
+        }
+
+        static void usersMenu() {
+            Console.Clear();
+            Console.WriteLine("-- Users --\n");
+            Console.WriteLine("Get Users [G]");
+            Console.WriteLine("Get User by ID [I]");
+            Console.WriteLine("Add User [A]");
+            Console.WriteLine("Edit User [E]");
+            Console.WriteLine("Delete User [D]");
+            Console.WriteLine("Cancel [C]");
+            Console.WriteLine("\n>");
+
+            string input = Console.ReadLine();
+
+            while (!isValidUsersInput(input)) {
                 Console.WriteLine("Veuillez entrer une commande valide :  ");
                 input = Console.ReadLine();
             };
@@ -55,11 +76,19 @@ namespace ConsoleApp {
             switch (input) {
                 case "P":
                 case "p":
-                    productMenu();
+                    productsMenu();
                     break;
                 case "L":
                 case "l":
                     login();
+                    break;
+                case "R":
+                case "r":
+                    register();
+                    break;
+                case "U":
+                case "u":
+                    usersMenu();
                     break;
                 case "q":
                 case "Q":
@@ -71,7 +100,7 @@ namespace ConsoleApp {
             return valid;
         }
 
-        static bool isValidProductInput(string input) {
+        static bool isValidProductsInput(string input) {
             bool valid = true;
             switch (input) {
                 case "G":
@@ -105,6 +134,40 @@ namespace ConsoleApp {
             return valid;
         }
 
+        static bool isValidUsersInput(string input) {
+            bool valid = true;
+            switch (input) {
+                case "G":
+                case "g":
+                    getUsers();
+                    break;
+                case "I":
+                case "i":
+                    getUserById();
+                    break;
+                case "A":
+                case "a":
+                    addProduct();
+                    break;
+                case "E":
+                case "e":
+                    editProduct();
+                    break;
+                case "D":
+                case "d":
+                    deleteProduct();
+                    break;
+                case "c":
+                case "C":
+                    mainMenu();
+                    break;
+                default:
+                    valid = false;
+                    break;
+            }
+            return valid;
+        }
+
         static void getProducts() {
             Console.Clear();
             Console.WriteLine("Connexion à l'API ...");
@@ -114,7 +177,7 @@ namespace ConsoleApp {
             Console.WriteLine(response.Content.ToString());
             // TODO : Bien afficher le JSON
             Console.Read();
-            productMenu();
+            productsMenu();
         }
 
         static void getProductById() {
@@ -133,7 +196,7 @@ namespace ConsoleApp {
             var response = client.Get(request);
             Console.WriteLine(response.Content);
             Console.Read();
-            productMenu();
+            productsMenu();
         }
 
         static void addProduct() {
@@ -179,7 +242,7 @@ namespace ConsoleApp {
             Console.WriteLine(response.Content.ToString());
             // TODO : Bien afficher le JSON
             Console.Read();
-            productMenu();
+            productsMenu();
         }
 
         static void editProduct() {
@@ -233,7 +296,7 @@ namespace ConsoleApp {
             Console.WriteLine(response.Content.ToString());
             // TODO : Bien afficher le JSON
             Console.Read();
-            productMenu();
+            productsMenu();
         }
 
         static void deleteProduct() {
@@ -252,7 +315,7 @@ namespace ConsoleApp {
             var response = client.Delete(request);
             Console.WriteLine(response.StatusCode);
             Console.Read();
-            productMenu();
+            productsMenu();
         }
 
         static void login() {
@@ -282,6 +345,85 @@ namespace ConsoleApp {
             
             Console.Read();
             mainMenu();
+        }
+
+        static void register() {
+            Console.Clear();
+            Console.WriteLine("Entrez votre nom d'utilisateur:");
+            string pseudo = Console.ReadLine();
+
+            Console.WriteLine("Entrez votre mail:");
+            string email = Console.ReadLine();
+            while (!isValidEmail(email)) {
+                Console.WriteLine("Entrez un email valide :  ");
+                email = Console.ReadLine();
+            };            
+
+            Console.WriteLine("Entrez votre mot de passe:");
+            string password = Console.ReadLine();
+
+
+            var client = new RestClient("https://localhost:7252/auth/register");
+            var request = new RestRequest();
+            Auth register = new Auth { Pseudo = pseudo, Email = email, Password = password };
+            request.AddJsonBody(register);
+            RestResponse response = null;
+            try {
+                response = client.Post(request);
+
+                Console.WriteLine(response.StatusCode);
+                Console.WriteLine(response.Content.ToString());
+
+            } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+
+            Console.Read();
+            mainMenu();
+        }
+
+        static bool isValidEmail(string email) {
+            var trimmedEmail = email.Trim();
+
+            if (trimmedEmail.EndsWith(".")) {
+                return false;
+            }
+            try {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == trimmedEmail;
+            } catch {
+                return false;
+            }
+        }
+
+        static void getUsers() {
+            Console.Clear();
+            Console.WriteLine("Connexion à l'API ...");
+            var client = new RestClient("https://localhost:7252/users");
+            var request = new RestRequest();
+            var response = client.Get(request);
+            Console.WriteLine(response.Content.ToString());
+            Console.Read();
+            productsMenu();
+        }
+
+        static void getUserById() {
+            Console.Clear();
+            Console.WriteLine("Entrez id:");
+            string idInput = Console.ReadLine();
+            int id;
+            while (!int.TryParse(idInput, out id)) {
+                Console.WriteLine("Entrez un id valide (un nombre) :  ");
+                idInput = Console.ReadLine();
+            };
+
+            Console.WriteLine("Connexion à l'API ...");
+            var client = new RestClient("https://localhost:7252/users/" + id);
+            var request = new RestRequest();
+            var response = client.Get(request);
+            Console.WriteLine(response.Content);
+            Console.Read();
+            productsMenu();
         }
     }
 }
