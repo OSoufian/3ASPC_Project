@@ -19,6 +19,7 @@ namespace ConsoleApp {
             Console.Clear();
             Console.WriteLine("-- iBay --\n");
             Console.WriteLine("Products [P]");
+            Console.WriteLine("Login [L]");
             Console.WriteLine("Exit the application [Q]");
             Console.WriteLine("\n>");
 
@@ -47,8 +48,6 @@ namespace ConsoleApp {
                 Console.WriteLine("Veuillez entrer une commande valide :  ");
                 input = Console.ReadLine();
             };
-
-
         }
 
         static bool isValidMainInput(string input) {
@@ -57,6 +56,10 @@ namespace ConsoleApp {
                 case "P":
                 case "p":
                     productMenu();
+                    break;
+                case "L":
+                case "l":
+                    login();
                     break;
                 case "q":
                 case "Q":
@@ -140,6 +143,15 @@ namespace ConsoleApp {
 
             Console.WriteLine("Entrez le lien de l'image :");
             string image = Console.ReadLine();
+            Uri uriResult;
+            bool result = Uri.TryCreate(image, UriKind.Absolute, out uriResult)
+                && uriResult.Scheme == Uri.UriSchemeHttp;
+            while (!result) {
+                Console.WriteLine("Entrez un lien valide : ");
+                image = Console.ReadLine();
+                result = Uri.TryCreate(image, UriKind.Absolute, out uriResult)
+                && uriResult.Scheme == Uri.UriSchemeHttp;
+            };
 
             Console.WriteLine("Entrez le prix:");
             string priceInput = Console.ReadLine();
@@ -241,6 +253,35 @@ namespace ConsoleApp {
             Console.WriteLine(response.StatusCode);
             Console.Read();
             productMenu();
+        }
+
+        static void login() {
+            Console.Clear();
+            Console.WriteLine("Entrez le nom d'utilisateur:");
+            string pseudo = Console.ReadLine();
+
+            Console.WriteLine("Entrez le mot de passe:");
+            string password = Console.ReadLine();
+
+
+            var client = new RestClient("https://localhost:7252/auth/login");
+            var request = new RestRequest();
+            Login login = new Login { Pseudo = pseudo, Password = password };
+            request.AddJsonBody(login);
+            RestResponse response = null;
+            try {
+                response = client.Post(request);
+
+                Console.WriteLine(response.StatusCode);
+                Console.WriteLine(response.Content.ToString());
+
+            } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
+
+            
+            Console.Read();
+            mainMenu();
         }
     }
 }

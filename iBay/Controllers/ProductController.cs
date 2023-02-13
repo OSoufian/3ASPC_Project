@@ -71,7 +71,7 @@ namespace iBay.Controllers {
                 .FirstOrDefaultAsync(s => s.Id == Id);
 
             if (Product == null) {
-                return NotFound("Pas de produits");
+                return NotFound("Pas de produit");
             } else {
                 return Ok(Product);
             }

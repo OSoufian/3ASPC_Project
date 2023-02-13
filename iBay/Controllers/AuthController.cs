@@ -50,7 +50,7 @@ namespace iBay.Controllers {
             }
         }
 
-        [HttpGet("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(Login login) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
@@ -58,10 +58,10 @@ namespace iBay.Controllers {
 
             User user = await database.User.FirstOrDefaultAsync(x => x.Pseudo == login.Pseudo);
             if (user == null)
-                return NotFound();
+                return NotFound("Utilisateur inexistant !");
 
             if (!VerifyPassword(login.Password, user.Password_Hash, user.Password_Salt))
-                return Unauthorized();
+                return Unauthorized("Mot de passe incorrect");
 
             UserResponse userResponse = await database.User.Select(
                 x => new UserResponse
