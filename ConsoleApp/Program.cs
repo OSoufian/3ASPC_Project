@@ -174,8 +174,7 @@ namespace ConsoleApp {
             var client = new RestClient("https://localhost:7252/products");
             var request = new RestRequest();
             var response = client.Get(request);
-            Console.WriteLine(response.Content.ToString());
-            // TODO : Bien afficher le JSON
+            Console.WriteLine(formatJson(response.Content.ToString()));
             Console.Read();
             productsMenu();
         }
@@ -194,7 +193,7 @@ namespace ConsoleApp {
             var client = new RestClient("https://localhost:7252/products/" + id);
             var request = new RestRequest();
             var response = client.Get(request);
-            Console.WriteLine(response.Content);
+            Console.WriteLine(formatJson(response.Content.ToString()));
             Console.Read();
             productsMenu();
         }
@@ -213,7 +212,7 @@ namespace ConsoleApp {
                 Console.WriteLine("Entrez un lien valide : ");
                 image = Console.ReadLine();
                 result = Uri.TryCreate(image, UriKind.Absolute, out uriResult)
-                && uriResult.Scheme == Uri.UriSchemeHttp;
+                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
             };
 
             Console.WriteLine("Entrez le prix:");
@@ -239,7 +238,7 @@ namespace ConsoleApp {
             request.AddJsonBody(product);
             var response = client.Post(request);
             Console.WriteLine(response.StatusCode);
-            Console.WriteLine(response.Content.ToString());
+            Console.WriteLine(formatJson(response.Content.ToString()));
             Console.Read();
             productsMenu();
         }
@@ -282,7 +281,6 @@ namespace ConsoleApp {
 
             var client = new RestClient("https://localhost:7252/products/" + id);
             var request = new RestRequest();
-            //Product product = new Product { Name = name, Image = image, Price = price, Available = available, Added_Time = DateTime.UtcNow };
             Product product = new Product();
             if (name != "") product.Name = name;
             if (image != "") product.Image = image;
@@ -292,8 +290,7 @@ namespace ConsoleApp {
             request.AddJsonBody(product);
             var response = client.Put(request);
             Console.WriteLine(response.StatusCode);
-            Console.WriteLine(response.Content.ToString());
-            // TODO : Bien afficher le JSON
+            Console.WriteLine(formatJson(response.Content.ToString()));
             Console.Read();
             productsMenu();
         }
@@ -372,7 +369,7 @@ namespace ConsoleApp {
                 response = client.Post(request);
 
                 Console.WriteLine(response.StatusCode);
-                Console.WriteLine(response.Content.ToString());
+                Console.WriteLine(formatJson(response.Content.ToString()));
 
             } catch (Exception ex) {
                 Console.WriteLine(ex.Message);
@@ -402,7 +399,7 @@ namespace ConsoleApp {
             var client = new RestClient("https://localhost:7252/users");
             var request = new RestRequest();
             var response = client.Get(request);
-            Console.WriteLine(response.Content.ToString());
+            Console.WriteLine(formatJson(response.Content.ToString()));
             Console.Read();
             usersMenu();
         }
@@ -421,7 +418,7 @@ namespace ConsoleApp {
             var client = new RestClient("https://localhost:7252/users/" + id);
             var request = new RestRequest();
             var response = client.Get(request);
-            Console.WriteLine(response.Content);
+            Console.WriteLine(formatJson(response.Content.ToString()));
             Console.Read();
             usersMenu();
         }
@@ -444,6 +441,11 @@ namespace ConsoleApp {
             Console.WriteLine(response.Content);
             Console.Read();
             usersMenu();
+        }
+
+        static string formatJson(string json) {
+            dynamic parsedJson = JsonConvert.DeserializeObject(json);
+            return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
         }
     }
 }

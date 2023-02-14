@@ -20,22 +20,20 @@ namespace iBay.Models {
         [StringLength(200)]
         public byte[]? Password_Salt { get; set; }
 
-        [Required]
         [StringLength(10)]
-        public string Role { get; set; }
+        public string? Role { get; set; }
 
-        public User(string email, string pseudo, byte[]? passwordHash, byte[]? passwordSalt, string role = "user") {
+        public User(string email, string pseudo, byte[]? passwordHash, byte[]? passwordSalt, string? role = "user") {
             Email = email;
             Pseudo = pseudo;
             Password_Hash = passwordHash;
             Password_Salt = passwordSalt;
-            Role = role;
         }
 
         public User() {
             Email = "e";
             Pseudo = "ps";
-            Role = "u";
+            Role = "user";
         }
     }
 }

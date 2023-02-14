@@ -1,58 +1,75 @@
-﻿using iBay.MiddleWares;
-using iBay.Responses;
-using iBay.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using iBay.MiddleWares;
+using iBay.Models;
+using iBay.Responses;
 
-namespace iBay.Controllers {
+namespace iBay.Controllers
+{
     [ApiController]
-    [Route("auth")]
-    public class AuthController : ControllerBase {
+    [Route("[controller]")]
+    public class AuthController : ControllerBase
+    {
         private readonly MySQLConnection database;
 
-        public AuthController(MySQLConnection database) {
+        public AuthController(MySQLConnection database)
+        {
             this.database = database;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Post(Auth Auth) {
-            if (!ModelState.IsValid) {
+        public async Task<IActionResult> Post(Auth Auth)
+        {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
+
+            User user = await database.User.FirstOrDefaultAsync(x => (x.Pseudo == Auth.Pseudo | x.Email == Auth.Email));
+            if (user != null)
+            {
+                return Conflict();
             }
 
             byte[] passwordHash, passwordSalt;
 
             CreatePasswordHash(Auth.Password, out passwordHash, out passwordSalt);
 
-            User newUser = new User() {
+            User newUser = new User()
+            {
                 Email = Auth.Email,
                 Pseudo = Auth.Pseudo,
                 Password_Hash = passwordHash,
-                Password_Salt = passwordSalt,
-                Role = Auth.Role
+                Password_Salt = passwordSalt
             };
 
             database.Add(newUser);
             await database.SaveChangesAsync();
 
-            UserResponse userResponse = new UserResponse() {
+            UserResponse userResponse = new UserResponse()
+            {
+                Id = newUser.Id,
                 Email = Auth.Email,
                 Pseudo = Auth.Pseudo,
-                Role = Auth.Role
+                Role = newUser.Role
             };
 
-            return Created($"User/{newUser.Id}", userResponse);
+            return Created($"users/{newUser.Id}", userResponse);
         }
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt) {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512()) {
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (System.Security.Cryptography.HMACSHA512 hmac = new System.Security.Cryptography.HMACSHA512())
+            {
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(Login login) {
-            if (!ModelState.IsValid) {
+        public async Task<IActionResult> Login(Login login)
+        {
+            if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
             }
 
@@ -75,11 +92,14 @@ namespace iBay.Controllers {
             return Ok(userResponse);
         }
 
-        private bool VerifyPassword(string password, byte[]? passwordHash, byte[]? passwordSalt) {
+        private bool VerifyPassword(string password, byte[]? passwordHash, byte[]? passwordSalt)
+        {
             if (passwordHash == null || passwordSalt == null) return false;
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt)) {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computedHash.Length; i++) {
+            using (System.Security.Cryptography.HMACSHA512 hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+            {
+                byte[] computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
                     if (computedHash[i] != passwordHash[i]) return false;
                 }
             }

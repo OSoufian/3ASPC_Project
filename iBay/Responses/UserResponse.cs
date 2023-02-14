@@ -14,20 +14,18 @@ namespace iBay.Responses {
         [StringLength(50)]
         public string Pseudo { get; set; }
 
-        [Required]
         [StringLength(10)]
-        public string Role { get; set; }
+        public string? Role { get; set; }
 
-        public UserResponse(string email, string pseudo, string role = "user") {
+        public UserResponse(string email, string pseudo, string? role = "user") {
             Email = email;
             Pseudo = pseudo;
-            Role = role;
         }
 
         public UserResponse() {
             Email = "e";
             Pseudo = "ps";
-            Role = "u";
+            Role = "user";
         }
     }
 }
