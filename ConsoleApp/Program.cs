@@ -155,7 +155,7 @@ namespace ConsoleApp {
                     break;
                 case "D":
                 case "d":
-                    deleteProduct();
+                    deleteUser();
                     break;
                 case "c":
                 case "C":
@@ -240,7 +240,6 @@ namespace ConsoleApp {
             var response = client.Post(request);
             Console.WriteLine(response.StatusCode);
             Console.WriteLine(response.Content.ToString());
-            // TODO : Bien afficher le JSON
             Console.Read();
             productsMenu();
         }
@@ -314,6 +313,7 @@ namespace ConsoleApp {
             var request = new RestRequest();
             var response = client.Delete(request);
             Console.WriteLine(response.StatusCode);
+            Console.WriteLine(response.Content);
             Console.Read();
             productsMenu();
         }
@@ -404,7 +404,7 @@ namespace ConsoleApp {
             var response = client.Get(request);
             Console.WriteLine(response.Content.ToString());
             Console.Read();
-            productsMenu();
+            usersMenu();
         }
 
         static void getUserById() {
@@ -423,7 +423,27 @@ namespace ConsoleApp {
             var response = client.Get(request);
             Console.WriteLine(response.Content);
             Console.Read();
-            productsMenu();
+            usersMenu();
+        }
+
+        static void deleteUser() {
+            Console.Clear();
+            Console.WriteLine("Entrez id:");
+            string idInput = Console.ReadLine();
+            int id;
+            while (!int.TryParse(idInput, out id)) {
+                Console.WriteLine("Entrez un id valide (un nombre) :  ");
+                idInput = Console.ReadLine();
+            };
+
+            Console.WriteLine("Connexion à l'API ...");
+            var client = new RestClient("https://localhost:7252/users/" + id);
+            var request = new RestRequest();
+            var response = client.Delete(request);
+            Console.WriteLine(response.StatusCode);
+            Console.WriteLine(response.Content);
+            Console.Read();
+            usersMenu();
         }
     }
 }

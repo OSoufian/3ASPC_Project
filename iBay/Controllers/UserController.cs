@@ -96,7 +96,7 @@ namespace iBay.Controllers {
             database.User.Attach(user);
             database.User.Remove(user);
             await database.SaveChangesAsync();
-            return NoContent();
+            return Ok("L'utilisateur " + user.Id + " a bien été supprimé : ");
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt) {
