@@ -17,7 +17,7 @@ namespace iBay.Controllers {
             this.database = database;
         }
 
-        [HttpPost("add/{productId}", Name = "AddCartItem")]
+        [HttpPost("{productId}", Name = "AddCartItem")]
         public async Task<IActionResult> AddCartItem(int productId, int quantity = 1) {
             var product = await database.Product.FindAsync(productId);
             if (product == null) {
@@ -29,15 +29,16 @@ namespace iBay.Controllers {
             //    return BadRequest();
             //}
 
-            Cart cart = new Cart { UserId = 3 };
+            Cart cart = new Cart { User_Id = 3 };
+            database.Cart.Add(cart);
 
 
-            var cartItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
-            if (cartItem != null) {
-                cartItem.Quantity += quantity;
+            var cart_Item = cart.Items.FirstOrDefault(item => item.Product_Id == productId);
+            if (cart_Item != null) {
+                cart_Item.Quantity += quantity;
             } else {
                 var newItem = new CartItem {
-                    ProductId = productId,
+                    Product_Id = productId,
                     Quantity = quantity
                 };
                 cart.Items.Add(newItem);

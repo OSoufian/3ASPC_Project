@@ -10,26 +10,23 @@ namespace iBay.Models
         public int Id { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public int User_Id { get; set; }
 
         [Required]
         public List<CartItem> Items { get; set; }
 
         [Required]
-        public decimal TotalPrice { get; set; }
+        public decimal Total_Price { get; set; }
 
-        public Cart(int id, int userId, List<CartItem> items, decimal totalPrice) {
+        public Cart(int id, int user_Id, List<CartItem> items, decimal totalPrice) {
             Id = id;
-            UserId = userId;
+            User_Id = user_Id;
             Items = items;
-            TotalPrice = totalPrice;
+            Total_Price = totalPrice;
         }
 
         public Cart() {
-            Id = 0;
-            UserId = 0;
             Items = new List<CartItem>();
-            TotalPrice =0;
         }
     }
 }

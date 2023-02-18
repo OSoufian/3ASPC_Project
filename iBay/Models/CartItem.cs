@@ -5,8 +5,9 @@ namespace iBay.Models {
         [Required]
         [Key]
         public int Id { get; set; }
+        public int CartId { get; set; }
         [Required]
-        public int ProductId { get; set; }
+        public int Product_Id { get; set; }
         [Required]
         public int Quantity { get; set; }
         [Required]
