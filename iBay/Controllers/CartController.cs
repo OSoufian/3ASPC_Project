@@ -29,13 +29,28 @@ namespace iBay.Controllers {
             //    return BadRequest();
             //}
 
+            // TODO: Remplacer User_id par user connecté
+
             Cart cart = new Cart { User_Id = 3 };
             database.Cart.Add(cart);
 
 
-            var cart_Item = cart.Items.FirstOrDefault(item => item.Product_Id == productId);
+            //var cart_Item = cart.Items.FirstOrDefault(item => item.Product_Id == productId);
+
+            var cart_Item = await database.Cart_Item.Select(
+                    s => new CartItem {
+                        Id = s.Id,
+                        Price = s.Price,
+                        CartId = s.CartId,
+                        Product_Id = s.Product_Id,
+                        Quantity = s.Quantity
+                    })
+                .FirstOrDefaultAsync(s => s.Product_Id == productId);
+
+
             if (cart_Item != null) {
                 cart_Item.Quantity += quantity;
+                database.Update(cart_Item);
             } else {
                 var newItem = new CartItem {
                     Product_Id = productId,
