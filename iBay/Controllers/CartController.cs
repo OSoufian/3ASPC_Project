@@ -1,67 +1,82 @@
-/*using _3ASPC.Models;
+using iBay.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace _3ASPC.Controller
-{
-    //[Authorize]
+namespace iBay.Controllers {
     [ApiController]
-    [Route("[controller]")]
-    public class CartController : ControllerBase
-    {
-        private readonly MySQLConnection database;
-        private readonly UserManager<IdentityUser> _userManager;
+    [Route("cart")]
+    public class CartController : ControllerBase {
 
-        public CartController(MySQLConnection database, UserManager<IdentityUser> userManager)
-        {
+        private readonly MySQLConnection database;
+
+        public CartController(MySQLConnection database) {
             this.database = database;
-            _userManager = userManager;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddToCart(Product product)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
+        [HttpPost("add/{productId}", Name = "AddCartItem")]
+        public async Task<IActionResult> AddCartItem(int productId, int quantity = 1) {
+            var product = await database.Product.FindAsync(productId);
+            if (product == null) {
+                return NotFound("Ce produit est inexistant !");
             }
 
-            // Get the logged-in user
-            *//*var user = await _userManager.GetUserAsync(User);*//*
+            //var cart = await GetCartForCurrentUser();
+            //if (cart == null) {
+            //    return BadRequest();
+            //}
 
-            var cart = await database.Cart.Include(c => c.Products)
-                                          .FirstOrDefaultAsync(c => c.UserId == user.Id);
-            if (cart == null)
-            {
-                cart = new Cart
-                {
-                    UserId = user.Id,
-                    Products = new List<Product>()
+            Cart cart = new Cart { UserId = 3 };
+
+
+            var cartItem = cart.Items.FirstOrDefault(item => item.ProductId == productId);
+            if (cartItem != null) {
+                cartItem.Quantity += quantity;
+            } else {
+                var newItem = new CartItem {
+                    ProductId = productId,
+                    Quantity = quantity
                 };
-                database.Cart.Add(cart);
+                cart.Items.Add(newItem);
             }
-
-            cart.Products.Add(product);
 
             await database.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        [HttpGet("{id}", Name = "GetCartById")]
+        public async Task<IActionResult> GetCartById(int id) {
+            var cart = await database.Cart.Include(c => c.Items).FirstOrDefaultAsync(c => c.Id == id);
+
+            if (cart == null) {
+                return NotFound();
+            }
 
             return Ok(cart);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCart()
-        {
-            // Get the logged-in user
-            var user = await _userManager.GetUserAsync(User);
+        [HttpDelete("{cartId}/items/{itemId}")]
+        public async Task<IActionResult> RemoveCartItem(int cartId, int itemId) {
+            var cart = await database.Cart.Include(c => c.Items).FirstOrDefaultAsync(c => c.Id == cartId);
 
-            // Get the cart for the user
-            var cart = await database.Cart
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(c => c.UserId == user.Id);
+            if (cart == null) {
+                return NotFound();
+            }
 
-            return Ok($"Your cart : {cart}");
+            var item = cart.Items.FirstOrDefault(i => i.Id == itemId);
+
+            if (item == null) {
+                return NotFound();
+            }
+
+            cart.Items.Remove(item);
+            await database.SaveChangesAsync();
+
+            return NoContent();
         }
     }
-}*/
+}

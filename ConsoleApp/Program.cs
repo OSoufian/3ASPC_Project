@@ -352,11 +352,11 @@ namespace ConsoleApp {
             Console.WriteLine("Entrez votre mail:");
             string email = Console.ReadLine();
             while (!isValidEmail(email)) {
-                Console.WriteLine("Entrez un email valide :  ");
+                Console.WriteLine("Entrez un email valide : ");
                 email = Console.ReadLine();
             };            
 
-            Console.WriteLine("Entrez votre mot de passe:");
+            Console.WriteLine("Entrez votre mot de passe: ");
             string password = Console.ReadLine();
 
 

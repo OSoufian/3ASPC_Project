@@ -99,14 +99,14 @@ namespace iBay.Controllers {
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int Id) {
-            Product Product = new Product() {
+            Product product = new Product() {
                 Id = Id
             };
 
-            database.Product.Attach(Product);
-            database.Product.Remove(Product);
+            database.Product.Attach(product);
+            database.Product.Remove(product);
             await database.SaveChangesAsync();
-            return NoContent();
+            return Ok("Le produit " + product.Id + " a bien été supprimé !");
         }
 
     }
