@@ -21,7 +21,9 @@ namespace ConsoleApp {
             Console.WriteLine("Products [P]");
             Console.WriteLine("Login [L]");
             Console.WriteLine("Register [R]");
+            Console.WriteLine("My Account [A]");
             Console.WriteLine("Manage Users (only Admin) [U]");
+            Console.WriteLine("Cart [C]");
             Console.WriteLine("Exit the application [Q]");
             Console.WriteLine("\n>");
 
@@ -52,6 +54,23 @@ namespace ConsoleApp {
             };
         }
 
+        static void myAccountMenu() {
+            Console.Clear();
+            Console.WriteLine("-- My Account --\n");
+            Console.WriteLine("My Informations [G]");
+            Console.WriteLine("Delete My Account [A]");
+            Console.WriteLine("Edit My Account [E]");
+            Console.WriteLine("Cancel [C]");
+            Console.WriteLine("\n>");
+
+            string input = Console.ReadLine();
+
+            while (!isValidMyAccountInput(input)) {
+                Console.WriteLine("Veuillez entrer une commande valide :  ");
+                input = Console.ReadLine();
+            };
+        }
+
         static void usersMenu() {
             Console.Clear();
             Console.WriteLine("-- Users --\n");
@@ -71,6 +90,22 @@ namespace ConsoleApp {
             };
         }
 
+        static void cartMenu() {
+            Console.Clear();
+            Console.WriteLine("-- Users --\n");
+            Console.WriteLine("Get My Cart [G]");
+            Console.WriteLine("Add Product to My Cart [A]");
+            Console.WriteLine("Cancel [C]");
+            Console.WriteLine("\n>");
+
+            string input = Console.ReadLine();
+
+            while (!isValidCartInput(input)) {
+                Console.WriteLine("Veuillez entrer une commande valide :  ");
+                input = Console.ReadLine();
+            };
+        }
+
         static bool isValidMainInput(string input) {
             bool valid = true;
             switch (input) {
@@ -85,6 +120,10 @@ namespace ConsoleApp {
                 case "R":
                 case "r":
                     register();
+                    break;
+                case "A":
+                case "a":
+                    isUserLogged();
                     break;
                 case "U":
                 case "u":
@@ -134,6 +173,32 @@ namespace ConsoleApp {
             return valid;
         }
 
+        static bool isValidMyAccountInput(string input) {
+            bool valid = true;
+            switch (input) {
+                case "G":
+                case "g":
+                    getMyAccount();
+                    break;
+                case "I":
+                case "i":
+                    getUserById();
+                    break;
+                case "D":
+                case "d":
+                    deleteUser();
+                    break;
+                case "c":
+                case "C":
+                    mainMenu();
+                    break;
+                default:
+                    valid = false;
+                    break;
+            }
+            return valid;
+        }
+
         static bool isValidUsersInput(string input) {
             bool valid = true;
             switch (input) {
@@ -145,17 +210,31 @@ namespace ConsoleApp {
                 case "i":
                     getUserById();
                     break;
-                case "A":
-                case "a":
-                    addProduct();
-                    break;
-                case "E":
-                case "e":
-                    editProduct();
-                    break;
                 case "D":
                 case "d":
                     deleteUser();
+                    break;
+                case "c":
+                case "C":
+                    mainMenu();
+                    break;
+                default:
+                    valid = false;
+                    break;
+            }
+            return valid;
+        }
+
+        static bool isValidCartInput(string input) {
+            bool valid = true;
+            switch (input) {
+                case "G":
+                case "g":
+                    //getMyCart();
+                    break;
+                case "A":
+                case "a":
+                    //addProductToCart();
                     break;
                 case "c":
                 case "C":
@@ -328,9 +407,9 @@ namespace ConsoleApp {
             var request = new RestRequest();
             Login login = new Login { Pseudo = pseudo, Password = password };
             request.AddJsonBody(login);
-            RestResponse response = null;
+            //RestResponse response = null;
             try {
-                response = client.Post(request);
+                RestResponse response = client.Post(request);
 
                 Console.WriteLine(response.StatusCode);
                 Console.WriteLine(response.Content.ToString());
@@ -391,6 +470,35 @@ namespace ConsoleApp {
             } catch {
                 return false;
             }
+        }
+
+        static void isUserLogged() {
+            Console.Clear();
+            Console.WriteLine("Connexion à l'API ...");
+            var client = new RestClient("https://localhost:7252/users/currentUser/");
+            var request = new RestRequest();
+            try {
+                var response = client.Get(request);
+
+                Console.WriteLine(formatJson(response.Content.ToString()));
+                myAccountMenu();                
+            } catch (Exception ex) {
+                //Console.WriteLine(ex.Message);
+                Console.WriteLine("Fonctionnalité non disponible depuis la Console App !");
+            }            
+            
+            Console.Read();
+            mainMenu();
+        }
+
+        static void getMyAccount() {
+            Console.WriteLine("Connexion à l'API ...");
+            var client = new RestClient("https://localhost:7252/users/currentUser/");
+            var request = new RestRequest();
+            var response = client.Get(request);
+            Console.WriteLine(formatJson(response.Content.ToString()));
+            Console.Read();
+            mainMenu();
         }
 
         static void getUsers() {

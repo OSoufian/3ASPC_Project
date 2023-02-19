@@ -1,4 +1,5 @@
 using iBay.Models;
+using iBay.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,23 +25,33 @@ namespace iBay.Controllers {
                 return NotFound("Ce produit est inexistant !");
             }
 
-            //var cart = await GetCartForCurrentUser();
-            //if (cart == null) {
-            //    return BadRequest();
-            //}
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId.HasValue) {
+                UserResponse user = await database.User.Select(
+                s => new UserResponse {
+                    Id = s.Id,
+                    Email = s.Email,
+                    Pseudo = s.Pseudo,
+                    Role = s.Role
+                }
+            ).FirstOrDefaultAsync(s => s.Id == userId);
+            } else {
+                return Unauthorized("Aucun utilisateur connecté !");
+            }
 
-            // TODO: Remplacer User_id par user connecté
 
-            Cart cart = new Cart { User_Id = 3 };
-            database.Cart.Add(cart);
+            var cart = await database.Cart.FirstOrDefaultAsync(c => c.User_Id == userId);
+            if (cart == null) {
+                cart = new Cart { User_Id = (int)userId };
+                database.Cart.Add(cart);
+            }
 
-
-            //var cart_Item = cart.Items.FirstOrDefault(item => item.Product_Id == productId);
+            await database.SaveChangesAsync();
 
             var cart_Item = await database.Cart_Item.Select(
                     s => new CartItem {
                         Id = s.Id,
-                        Price = s.Price,
+                        Price = product.Price,
                         CartId = s.CartId,
                         Product_Id = s.Product_Id,
                         Quantity = s.Quantity
@@ -50,33 +61,55 @@ namespace iBay.Controllers {
 
             if (cart_Item != null) {
                 cart_Item.Quantity += quantity;
+                cart.Total_Price += cart_Item.Price;
                 database.Update(cart_Item);
+                database.Update(cart);
             } else {
                 var newItem = new CartItem {
                     Product_Id = productId,
-                    Quantity = quantity
+                    Quantity = quantity,
+                    Price = product.Price
                 };
+                cart.Total_Price += newItem.Price;
                 cart.Items.Add(newItem);
+                database.Update(cart);
             }
+
+
 
             await database.SaveChangesAsync();
 
             return Ok();
         }
 
-        [HttpGet("{id}", Name = "GetCartById")]
-        public async Task<IActionResult> GetCartById(int id) {
-            var cart = await database.Cart.Include(c => c.Items).FirstOrDefaultAsync(c => c.Id == id);
+        [HttpGet("MyCart", Name = "GetCart")]
+        public async Task<IActionResult> GetCart() {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId.HasValue) {
+                UserResponse user = await database.User.Select(
+                s => new UserResponse {
+                    Id = s.Id,
+                    Email = s.Email,
+                    Pseudo = s.Pseudo,
+                    Role = s.Role
+                }
+            ).FirstOrDefaultAsync(s => s.Id == userId);
+            } else {
+                return Unauthorized("Aucun utilisateur connecté !");
+            }
 
+
+            var cart = await database.Cart.FirstOrDefaultAsync(c => c.User_Id == userId);
             if (cart == null) {
-                return NotFound();
+                return NotFound("Vous n'avez acheté encore aucun article !");
             }
 
             return Ok(cart);
+
         }
 
-        [HttpDelete("{cartId}/items/{itemId}")]
-        public async Task<IActionResult> RemoveCartItem(int cartId, int itemId) {
+        [HttpDelete("{itemId}")]
+        public async Task<IActionResult> RemoveCartItem(int itemId) {
             var cart = await database.Cart.Include(c => c.Items).FirstOrDefaultAsync(c => c.Id == cartId);
 
             if (cart == null) {
@@ -93,6 +126,43 @@ namespace iBay.Controllers {
             await database.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpDelete("pay")]
+        public async Task<IActionResult> PayCart()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId.HasValue)
+            {
+                UserResponse user = await database.User.Select(
+                s => new UserResponse
+                {
+                    Id = s.Id,
+                    Email = s.Email,
+                    Pseudo = s.Pseudo,
+                    Role = s.Role
+                }
+            ).FirstOrDefaultAsync(s => s.Id == userId);
+            }
+            else
+            {
+                return Unauthorized("Aucun utilisateur connecté !");
+            }
+
+            var cart = await database.Cart.Include(c => c.Items).FirstOrDefaultAsync(c => c.User_Id == userId);
+
+            if (cart == null)
+            {
+                return NotFound();
+            }
+
+            decimal total = cart.Total_Price;
+            database.Cart.Attach(cart);
+            database.Cart.Remove(cart);
+            await database.SaveChangesAsync();
+
+
+            return Ok($"Payment successful, total cost : {total} euros");
         }
     }
 }

@@ -89,6 +89,8 @@ namespace iBay.Controllers
                     Role = x.Role
                 }
             ).FirstOrDefaultAsync(x => x.Pseudo == login.Pseudo);
+            HttpContext.Session.SetInt32("UserId", userResponse.Id);
+            HttpContext.Session.SetString("UserRole", userResponse.Role);
             return Ok(userResponse);
         }
 
